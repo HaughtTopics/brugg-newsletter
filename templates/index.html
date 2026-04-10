@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Supply Chain Newsletter &mdash; Brugg Lifting AG</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Arial,sans-serif;background:#f0f2f5;min-height:100vh}
+.topbar{background:#0f1f38;height:52px;display:flex;align-items:center;padding:0 28px;gap:14px;border-bottom:2px solid #c9a84c;position:sticky;top:0;z-index:10}
+.logo{width:30px;height:30px;background:#c9a84c;border-radius:4px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:#0f1f38;flex-shrink:0}
+.brand{color:#fff;font-size:13px;font-weight:600}
+.brand span{color:rgba(255,255,255,0.45);font-size:11px;font-weight:400;margin-left:6px}
+.kw-chip{margin-left:auto;font-family:monospace;font-size:11px;color:#c9a84c;background:rgba(201,168,76,0.12);padding:4px 10px;border-radius:3px;border:1px solid rgba(201,168,76,0.25)}
+.layout{max-width:1280px;margin:0 auto;padding:20px;display:grid;grid-template-columns:260px 1fr;gap:18px;align-items:start}
+.sidebar{display:flex;flex-direction:column;gap:12px;position:sticky;top:72px}
+.card{background:#fff;border:1px solid #dde2e8;border-radius:10px;overflow:hidden}
+.card-head{padding:11px 15px;background:#f5f7fa;border-bottom:1px solid #dde2e8}
+.card-head h3{font-size:12px;font-weight:600;color:#0f1f38;margin-bottom:2px}
+.card-head p{font-size:10px;color:#6b7a8d}
+.topics{padding:8px 0}
+.topic-row{display:flex;align-items:center;gap:9px;padding:6px 15px;font-size:11px;color:#6b7a8d;border-bottom:1px solid #f0f0f0}
+.topic-row:last-child{border-bottom:none}
+.dot{width:5px;height:5px;border-radius:50%;background:#c9a84c;flex-shrink:0}
+.how{padding:12px 15px;display:flex;flex-direction:column;gap:9px}
+.how-step{display:flex;gap:10px;align-items:flex-start}
+.how-num{width:18px;height:18px;border-radius:50%;background:#0f1f38;color:#fff;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.how-text{font-size:11px;color:#555;line-height:1.5}
+.main{display:flex;flex-direction:column;gap:14px}
+.gen-card{background:#fff;border:1px solid #dde2e8;border-radius:10px;overflow:hidden}
+.gen-top{padding:16px 20px;border-bottom:1px solid #dde2e8;display:flex;align-items:center;justify-content:space-between}
+.gen-title{font-size:15px;font-weight:600;color:#0f1f38}
+.gen-sub{font-size:11px;color:#6b7a8d;margin-top:3px}
+.gen-actions{display:flex;gap:8px}
+.btn-gen{background:#0f1f38;color:#fff;border:none;border-radius:7px;padding:10px 22px;font-size:13px;font-weight:600;cursor:pointer;font-family:Arial,sans-serif;display:flex;align-items:center;gap:7px;transition:background .15s}
+.btn-gen:hover{background:#1a3a5c}
+.btn-gen:disabled{opacity:.4;cursor:not-allowed}
+.btn-copy{background:#fff;color:#0f1f38;border:1px solid #dde2e8;border-radius:7px;padding:10px 16px;font-size:12px;cursor:pointer;font-family:Arial,sans-serif;transition:background .15s}
+.btn-copy:hover{background:#f5f7fa}
+.btn-copy:disabled{opacity:.4;cursor:not-allowed}
+.btn-eml{background:#1a5cb5;color:#fff;border:none;border-radius:7px;padding:10px 16px;font-size:12px;cursor:pointer;font-family:Arial,sans-serif;transition:background .15s}
+.btn-eml:hover{background:#1249a0}
+.btn-eml:disabled{opacity:.4;cursor:not-allowed}
+.prog-area{padding:18px 20px;display:none}
+.prog-label{font-size:11px;font-family:monospace;color:#6b7a8d;margin-bottom:10px}
+.prog-track{height:3px;background:#f0f0f0;border-radius:3px;margin-bottom:16px;overflow:hidden}
+.prog-bar{height:100%;background:#c9a84c;border-radius:3px;width:0%;transition:width .5s ease}
+.prog-steps{display:flex;flex-direction:column}
+.prog-step{display:flex;gap:12px;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f5f5f5}
+.prog-step:last-child{border-bottom:none}
+.prog-dot{width:8px;height:8px;border-radius:50%;border:1.5px solid #dde2e8;flex-shrink:0;margin-top:4px;transition:all .3s}
+.prog-step.done .prog-dot{background:#1a6e3c;border-color:#1a6e3c}
+.prog-step.active .prog-dot{background:#c9a84c;border-color:#c9a84c;box-shadow:0 0 0 3px rgba(201,168,76,.2)}
+.prog-step-label{font-size:12px;color:#bbb;transition:color .3s}
+.prog-step.active .prog-step-label{color:#0f1f38;font-weight:500}
+.prog-step.done .prog-step-label{color:#1a6e3c}
+.empty-area{padding:52px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;color:#bbb}
+.empty-icon{width:52px;height:52px;border:1.5px solid #dde2e8;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px}
+.empty-title{font-size:13px;color:#6b7a8d}
+.empty-hint{font-size:11px;font-family:monospace}
+.error-area{padding:16px 20px;display:none}
+.error-box{background:#fdf2f2;border:1px solid #f5c0c0;border-radius:7px;padding:14px 16px}
+.error-title{font-size:12px;font-weight:600;color:#b83030;margin-bottom:5px}
+.error-msg{font-size:11px;color:#8a2020;font-family:monospace;line-height:1.5}
+.out-area{display:none}
+.out-meta{padding:12px 20px;background:#f5f7fa;border-bottom:1px solid #dde2e8;display:flex;align-items:center;gap:10px}
+.out-badge{font-family:monospace;font-size:10px;font-weight:500;background:#0f1f38;color:#c9a84c;padding:3px 10px;border-radius:3px}
+.out-date{font-size:11px;color:#6b7a8d}
+/* Email preview */
+.email-preview{background:#fff}
+.ep-banner{width:100%;display:block;max-width:100%}
+.ep-body{padding:20px 24px;font-family:Arial,sans-serif;font-size:10pt;color:#1a1a1a;line-height:1.6}
+.ep-header{margin-bottom:18px;padding-bottom:12px;border-bottom:2px solid #0f1f38}
+.ep-title{font-size:13pt;font-weight:bold;color:#0f1f38;margin-bottom:3px;line-height:1.4}
+.ep-sub{font-size:9pt;color:#6b7a8d;line-height:1.6}
+.ep-topic{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid #e8ecf0}
+.ep-topic:last-child{border-bottom:none;margin-bottom:0}
+.ep-topic-title{font-size:11pt;font-weight:bold;color:#0f1f38;margin-bottom:8px;line-height:1.6}
+.ep-inhalt{font-size:10pt;line-height:1.6;margin-bottom:6px;color:#1a1a1a}
+.ep-auswirkung{font-size:10pt;line-height:1.6;margin-bottom:4px}
+.ep-auswirkung b{color:#1a5cb5}
+.ep-einschaetzung{font-size:10pt;line-height:1.6}
+.ep-einschaetzung b{color:#1a6e3c}
+.ep-sources{font-size:8pt;color:#888;margin-top:16px;padding-top:10px;border-top:1px solid #eee;line-height:1.6}
+.ep-footer{font-size:8pt;color:#aaa;margin-top:10px;padding-top:8px;border-top:1px solid #eee}
+footer{text-align:center;padding:16px;font-size:10px;color:#bbb;font-family:monospace;margin-top:12px}
+@media(max-width:768px){.layout{grid-template-columns:1fr}.sidebar{position:static}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="logo">BL</div>
+  <div class="brand">Supply Chain Newsletter <span>Brugg Lifting AG</span></div>
+  <div class="kw-chip" id="kwChip">KW {{ kw }} / {{ year }}</div>
+</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="card">
+      <div class="card-head"><h3>Fokus Standorte</h3></div>
+      <div class="topics">
+        <div class="topic-row"><span class="dot" style="background:#c9a84c"></span>Brugg Lifting AG (Schweiz)</div>
+        <div class="topic-row"><span class="dot" style="background:#e05a2b"></span>Brugg Lifting China</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>Themenfelder</h3></div>
+      <div class="topics">
+        <div class="topic-row"><span class="dot"></span>Stahlpreise &amp; Walzdraht</div>
+        <div class="topic-row"><span class="dot"></span>Seefracht &amp; Transport</div>
+        <div class="topic-row"><span class="dot"></span>Energiepreise Europa</div>
+        <div class="topic-row"><span class="dot"></span>Supply Chain St&ouml;rungen</div>
+        <div class="topic-row"><span class="dot"></span>EUR / CHF / USD / CNY</div>
+        <div class="topic-row"><span class="dot"></span>Aufzugsmarkt weltweit</div>
+        <div class="topic-row"><span class="dot"></span>Polyurethan &amp; Synthetik</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>So funktioniert es</h3></div>
+      <div class="how">
+        <div class="how-step"><div class="how-num">1</div><div class="how-text">Jeden Montag auf «Generieren» klicken</div></div>
+        <div class="how-step"><div class="how-num">2</div><div class="how-text">Server sucht live im Web nach aktuellen Marktdaten</div></div>
+        <div class="how-step"><div class="how-num">3</div><div class="how-text">Newsletter erscheint formatiert mit Banner</div></div>
+        <div class="how-step"><div class="how-num">4</div><div class="how-text">Als .eml exportieren und in Outlook öffnen</div></div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="gen-card">
+      <div class="gen-top">
+        <div>
+          <div class="gen-title">Wöchentlicher Marktüberblick</div>
+          <div class="gen-sub">Zeitraum: {{ date_range }}</div>
+        </div>
+        <div class="gen-actions">
+          <button class="btn-copy" id="btnCopy" onclick="copyText()" disabled>Kopieren</button>
+          <button class="btn-eml" id="btnEml" onclick="exportEml()" disabled>&#128394; .eml</button>
+          <button class="btn-gen" id="btnGen" onclick="generate()">
+            <span id="genIco">&#9654;</span>
+            <span id="genLbl">Newsletter generieren</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="prog-area" id="progArea">
+        <div class="prog-label" id="progLabel">Initialisierung...</div>
+        <div class="prog-track"><div class="prog-bar" id="progBar"></div></div>
+        <div class="prog-steps">
+          <div class="prog-step" id="ps1"><div class="prog-dot"></div><div class="prog-step-label">Stahlpreise &amp; Rohstoffm&auml;rkte</div></div>
+          <div class="prog-step" id="ps2"><div class="prog-dot"></div><div class="prog-step-label">Seefrachtraten &amp; Transport</div></div>
+          <div class="prog-step" id="ps3"><div class="prog-dot"></div><div class="prog-step-label">Energie, W&auml;hrungen &amp; Geopolitik</div></div>
+          <div class="prog-step" id="ps4"><div class="prog-dot"></div><div class="prog-step-label">Supply Chain &amp; Aufzugsmarkt</div></div>
+          <div class="prog-step" id="ps5"><div class="prog-dot"></div><div class="prog-step-label">Newsletter wird verfasst</div></div>
+        </div>
+      </div>
+
+      <div class="empty-area" id="emptyArea">
+        <div class="empty-icon">&#9913;</div>
+        <div class="empty-title">Agent bereit</div>
+        <div class="empty-hint">Klicke «Newsletter generieren» um zu starten</div>
+      </div>
+
+      <div class="error-area" id="errArea">
+        <div class="error-box">
+          <div class="error-title">Fehler</div>
+          <div class="error-msg" id="errMsg"></div>
+        </div>
+      </div>
+
+      <div class="out-area" id="outArea">
+        <div class="out-meta">
+          <span class="out-badge" id="outBadge">KW</span>
+          <span class="out-date" id="outDate"></span>
+        </div>
+        <div class="email-preview">
+          <img class="ep-banner" src="/static/banner.jpg" alt="Supply Chain Newsletter">
+          <div class="ep-body" id="epBody"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<footer>Brugg Lifting AG &mdash; Supply Chain Newsletter Agent &middot; Powered by Claude (Anthropic)</footer>
+
+<script>
+var rawText = '';
+var kwLabel = 'KW {{ kw }} / {{ year }}';
+var dateRange = '{{ date_range }}';
+
+var stepLabels = [
+  'Stahlpreise & Rohstoffmaerkte werden abgerufen...',
+  'Seefrachtraten & Transport werden analysiert...',
+  'Energie, Waehrungen & Geopolitik werden ausgewertet...',
+  'Supply Chain & Aufzugsmarkt werden geprueft...',
+  'Newsletter wird verfasst und formatiert...'
+];
+
+function setStep(n) {
+  for (var i = 1; i <= 5; i++) {
+    var el = document.getElementById('ps' + i);
+    el.className = 'prog-step' + (i < n ? ' done' : i === n ? ' active' : '');
+  }
+  document.getElementById('progBar').style.width = ((n / 5) * 100) + '%';
+}
+
+function sleep(ms) { return new Promise(function(r) { setTimeout(r, ms); }); }
+
+async function generate() {
+  var btn = document.getElementById('btnGen');
+  btn.disabled = true;
+  document.getElementById('btnCopy').disabled = true;
+  document.getElementById('btnEml').disabled = true;
+  document.getElementById('genIco').textContent = '⏳';
+  document.getElementById('genLbl').textContent = 'Wird generiert...';
+  document.getElementById('emptyArea').style.display = 'none';
+  document.getElementById('outArea').style.display = 'none';
+  document.getElementById('errArea').style.display = 'none';
+
+  var prog = document.getElementById('progArea');
+  prog.style.display = 'block';
+  setStep(0);
+
+  // Animate progress while waiting for server
+  var stepIdx = 1;
+  var progInterval = setInterval(function() {
+    if (stepIdx <= 5) {
+      document.getElementById('progLabel').textContent = stepLabels[stepIdx - 1];
+      setStep(stepIdx);
+      stepIdx++;
+    }
+  }, 8000);
+
+  try {
+    var resp = await fetch('/generate', {method: 'POST', headers: {'Content-Type': 'application/json'}});
+    clearInterval(progInterval);
+    setStep(5);
+
+    // Robust: handle non-JSON responses (e.g. 502 Gateway Timeout from Render)
+    var data;
+    try {
+      data = await resp.json();
+    } catch(jsonErr) {
+      throw new Error('Server-Fehler (HTTP ' + resp.status + '). Bitte Seite neu laden und erneut versuchen.');
+    }
+
+    if (!resp.ok || data.error) {
+      throw new Error(data.error || 'Unbekannter Server-Fehler (HTTP ' + resp.status + ')');
+    }
+
+    rawText = data.text;
+    kwLabel = data.kw_label;
+    dateRange = data.date_range;
+
+    prog.style.display = 'none';
+    document.getElementById('outBadge').textContent = kwLabel;
+    document.getElementById('outDate').textContent = 'Generiert: ' + new Date().toLocaleString('de-CH', {weekday:'long',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+    document.getElementById('epBody').innerHTML = buildEmailHTML(rawText);
+    document.getElementById('outArea').style.display = 'block';
+    document.getElementById('btnCopy').disabled = false;
+    document.getElementById('btnEml').disabled = false;
+
+  } catch(e) {
+    clearInterval(progInterval);
+    prog.style.display = 'none';
+    document.getElementById('errMsg').textContent = e.message;
+    document.getElementById('errArea').style.display = 'block';
+  } finally {
+    clearInterval(progInterval);
+    btn.disabled = false;
+    document.getElementById('genIco').textContent = '↺';
+    document.getElementById('genLbl').textContent = 'Neu generieren';
+  }
+}
+
+function esc(s) {
+  if (!s) return '';
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function parse(text) {
+  var lines = text.split('\n');
+  var topics = [], sources = '', cur = null;
+  for (var i = 0; i < lines.length; i++) {
+    var t = lines[i].trim();
+    if (!t) continue;
+    if (/^[-=_*]{5,}/.test(t) || t.charCodeAt(0) === 0x2501) continue;
+    if (/^SUPPLY CHAIN NEWSLETTER/i.test(t)) continue;
+    if (/^Brugg Lifting AG/i.test(t)) continue;
+    if (/^Zeitraum:/i.test(t)) continue;
+    var m = t.match(/^(\d+)[.)]\s+(.+)$/);
+    if (m && m[2] && m[2].length > 2) {
+      if (cur) topics.push(cur);
+      cur = {title: m[2], inhalt: '', auswirkung: '', einschaetzung: ''};
+      continue;
+    }
+    if (/^Quellen:/i.test(t)) {
+      if (cur) { topics.push(cur); cur = null; }
+      sources = t; continue;
+    }
+    if (cur) {
+      if (/^Inhalt:/i.test(t)) cur.inhalt = t.replace(/^Inhalt:\s*/i, '');
+      else if (/^Auswirkung/i.test(t)) cur.auswirkung = t.replace(/^Auswirkung[^:]*:\s*/i, '');
+      else if (/^Relevanz/i.test(t)) cur.auswirkung = t.replace(/^Relevanz[^:]*:\s*/i, '');
+      else if (/^Einsch/i.test(t)) cur.einschaetzung = t.replace(/^Einsch[^:]*:\s*/i, '');
+      else {
+        if (cur.einschaetzung) cur.einschaetzung += ' ' + t;
+        else if (cur.auswirkung) cur.auswirkung += ' ' + t;
+        else cur.inhalt += (cur.inhalt ? ' ' : '') + t;
+      }
+    } else if (sources) sources += ' ' + t;
+  }
+  if (cur) topics.push(cur);
+  return {topics: topics, sources: sources};
+}
+
+function buildEmailHTML(text) {
+  var p = parse(text);
+  var h = '<div class="ep-header"><div class="ep-title">SUPPLY CHAIN NEWSLETTER — ' + esc(kwLabel) + '</div>';
+  h += '<div class="ep-sub">Brugg Lifting AG | Interner Marktüberblick | ' + esc(dateRange) + '</div></div>';
+  if (!p.topics.length) h += '<p style="color:#bbb">Keine Themen erkannt.</p>';
+  for (var i = 0; i < p.topics.length; i++) {
+    var tp = p.topics[i];
+    var last = i === p.topics.length - 1 ? ' style="border-bottom:none;margin-bottom:0"' : '';
+    h += '<div class="ep-topic"' + last + '>';
+    h += '<div class="ep-topic-title">' + (i+1) + '. ' + esc(tp.title) + '</div>';
+    if (tp.inhalt) h += '<div class="ep-inhalt">' + esc(tp.inhalt) + '</div>';
+    if (tp.auswirkung) h += '<div class="ep-auswirkung"><b>Auswirkungen für Brugg Lifting:</b> ' + esc(tp.auswirkung) + '</div>';
+    if (tp.einschaetzung) h += '<div class="ep-einschaetzung"><b>Einschätzung:</b> ' + esc(tp.einschaetzung) + '</div>';
+    h += '</div>';
+  }
+  if (p.sources) h += '<div class="ep-sources">' + esc(p.sources) + '</div>';
+  h += '<div class="ep-footer">Brugg Lifting AG — Intern &amp; vertraulich.</div>';
+  return h;
+}
+
+function copyText() {
+  navigator.clipboard.writeText(rawText).then(function() {
+    var b = document.getElementById('btnCopy');
+    var o = b.textContent; b.textContent = '✓ Kopiert!';
+    setTimeout(function(){b.textContent=o;}, 2000);
+  });
+}
+
+function exportEml() {
+  var p = parse(rawText);
+  var bodyHTML = buildEmailHTML(rawText);
+  var bannerUrl = window.location.origin + '/static/banner.jpg';
+  var css =
+    'body{margin:0;padding:0;background:#fff;font-family:Arial,sans-serif}' +
+    '.ep-body{padding:20px 24px;font-family:Arial,sans-serif;font-size:10pt;color:#1a1a1a;line-height:1.6}' +
+    '.ep-header{margin-bottom:18px;padding-bottom:12px;border-bottom:2px solid #0f1f38}' +
+    '.ep-title{font-size:13pt;font-weight:bold;color:#0f1f38;margin-bottom:3px;line-height:1.4}' +
+    '.ep-sub{font-size:9pt;color:#6b7a8d;line-height:1.6}' +
+    '.ep-topic{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid #e8ecf0}' +
+    '.ep-topic-title{font-size:11pt;font-weight:bold;color:#0f1f38;margin-bottom:8px;line-height:1.6}' +
+    '.ep-inhalt{font-size:10pt;line-height:1.6;margin-bottom:6px}' +
+    '.ep-auswirkung{font-size:10pt;line-height:1.6;margin-bottom:4px}' +
+    '.ep-auswirkung b{color:#1a5cb5}' +
+    '.ep-einschaetzung{font-size:10pt;line-height:1.6}' +
+    '.ep-einschaetzung b{color:#1a6e3c}' +
+    '.ep-sources{font-size:8pt;color:#888;margin-top:16px;padding-top:10px;border-top:1px solid #eee;line-height:1.6}' +
+    '.ep-footer{font-size:8pt;color:#aaa;margin-top:10px;padding-top:8px;border-top:1px solid #eee}';
+  var fullHTML =
+    '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>' + css + '</style></head><body>' +
+    '<table width="850" cellpadding="0" cellspacing="0" border="0" align="center" style="max-width:850px">' +
+    '<tr><td><img src="' + bannerUrl + '" width="850" style="display:block;width:100%;max-width:850px" alt="Banner"></td></tr>' +
+    '<tr><td class="ep-body">' + bodyHTML + '</td></tr>' +
+    '</table></body></html>';
+  var subject = 'Supply Chain Newsletter ' + kwLabel + ' – Brugg Lifting AG';
+  var eml = 'MIME-Version: 1.0\nContent-Type: multipart/alternative; boundary="BL_NL"\n' +
+    'Subject: ' + subject + '\nFrom: \nTo: \n\n' +
+    '--BL_NL\nContent-Type: text/html; charset=UTF-8\nContent-Transfer-Encoding: 8bit\n\n' +
+    fullHTML + '\n--BL_NL--';
+  var blob = new Blob([eml], {type:'message/rfc822'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = 'Newsletter_' + kwLabel.replace(' / ','_').replace(' ','_') + '.eml';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function(){URL.revokeObjectURL(url);}, 1000);
+}
+</script>
+</body>
+</html>
