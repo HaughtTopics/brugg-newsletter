@@ -236,10 +236,17 @@ async function generate() {
     var resp = await fetch('/generate', {method: 'POST', headers: {'Content-Type': 'application/json'}});
     clearInterval(progInterval);
     setStep(5);
-    var data = await resp.json();
+
+    // Robust: handle non-JSON responses (e.g. 502 Gateway Timeout from Render)
+    var data;
+    try {
+      data = await resp.json();
+    } catch(jsonErr) {
+      throw new Error('Server-Fehler (HTTP ' + resp.status + '). Bitte Seite neu laden und erneut versuchen.');
+    }
 
     if (!resp.ok || data.error) {
-      throw new Error(data.error || 'Server-Fehler');
+      throw new Error(data.error || 'Unbekannter Server-Fehler (HTTP ' + resp.status + ')');
     }
 
     rawText = data.text;
@@ -260,6 +267,7 @@ async function generate() {
     document.getElementById('errMsg').textContent = e.message;
     document.getElementById('errArea').style.display = 'block';
   } finally {
+    clearInterval(progInterval);
     btn.disabled = false;
     document.getElementById('genIco').textContent = '↺';
     document.getElementById('genLbl').textContent = 'Neu generieren';
